@@ -1,9 +1,14 @@
 from onvif import ONVIFCamera
-import sys
+import argparse
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 5, f'Usage: python3 {__file__} <ip address> <HTTP port> <username> <password>'
-    mycam = ONVIFCamera(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], 'wsdl')
+    parser = argparse.ArgumentParser(description='config framerate and resolution on ONVIF-supported camera')
+    parser.add_argument('ip_address')
+    parser.add_argument('username')
+    parser.add_argument('password')
+    parser.add_argument('-p', '--port', default=80, help='HTTP port')
+    args = parser.parse_args()
+    mycam = ONVIFCamera(args.ip_address, args.port, args.username, args.password, 'wsdl')
     mycam.create_media_service()    
     options = mycam.media.GetVideoEncoderConfigurationOptions()
 
@@ -38,16 +43,6 @@ if __name__ == '__main__':
     setEncoderConfigParams = mycam.media.create_type('SetVideoEncoderConfiguration')
     setEncoderConfigParams.Configuration = currentConfig
     setEncoderConfigParams.ForcePersistence = True # Deprecated but still required param?
-
-    # if encoding == 'JPEG':
-    #     setEncoderConfigParams.Configuration.H264 = None
-    # elif encoding == 'MPEG4':
-    #     raise NotImplementedError('MPEG4 not implemented')
-    # elif encoding == 'H264':
-    #     setEncoderConfigParams.Configuration.H264.GovLength = 50
-    #     setEncoderConfigParams.Configuration.H264.H264Profile = 'High'
-    # else:
-    #     raise ValueError(f'Invalid encoding {encoding}')
     
     mycam.media.SetVideoEncoderConfiguration(setEncoderConfigParams)
     print('done')
