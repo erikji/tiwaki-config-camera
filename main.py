@@ -2,7 +2,7 @@ from onvif import ONVIFCamera
 import sys
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 5, f'Usage: python3 {__file__} <ip address> <port> <username> <password>'
+    assert len(sys.argv) == 5, f'Usage: python3 {__file__} <ip address> <HTTP port> <username> <password>'
     mycam = ONVIFCamera(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], 'wsdl')
     mycam.create_media_service()    
     options = mycam.media.GetVideoEncoderConfigurationOptions()
